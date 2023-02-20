@@ -1,0 +1,176 @@
+Microsoft Windows [Version 10.0.19044.2604]
+(c) Microsoft Corporation. All rights reserved.
+
+E:\iNeuron\Hive\HiveSetup_reSetup\Hive>docker-compose up -d
+[+] Running 6/6
+ - Network hive_default                 Created                                                                                                                    0.1s
+ - Container namenode                   Started                                                                                                                    1.9s
+ - Container datanode                   Started                                                                                                                    2.8s
+ - Container hive-metastore-postgresql  Started                                                                                                                    3.7s
+ - Container hive-metastore             Started                                                                                                                    5.2s
+ - Container hive-server                Started                                                                                                                    6.4s
+
+E:\iNeuron\Hive\HiveSetup_reSetup\Hive>docker ps -a
+CONTAINER ID   IMAGE                                             COMMAND                  CREATED              STATUS                        PORTS                                          NAMES
+926ea2b9e6dc   bde2020/hive:2.3.2-postgresql-metastore           "entrypoint.sh /bin/…"   About a minute ago   Up About a minute             0.0.0.0:10000->10000/tcp, 10002/tcp            hive-server
+045959e8ef88   bde2020/hive:2.3.2-postgresql-metastore           "entrypoint.sh /opt/…"   About a minute ago   Up About a minute             10000/tcp, 0.0.0.0:9083->9083/tcp, 10002/tcp   hive-metastore
+2cd45860bf1a   bde2020/hive-metastore-postgresql:2.3.0           "/docker-entrypoint.…"   About a minute ago   Up About a minute             5432/tcp                                       hive-metastore-postgresql
+33beca5bfd8d   bde2020/hadoop-datanode:2.0.0-hadoop2.7.4-java8   "/entrypoint.sh /run…"   About a minute ago   Up About a minute (healthy)   0.0.0.0:50075->50075/tcp                       datanode
+989f841add03   bde2020/hadoop-namenode:2.0.0-hadoop2.7.4-java8   "/entrypoint.sh /run…"   About a minute ago   Up About a minute (healthy)   0.0.0.0:50070->50070/tcp                       namenode
+13cf73511206   bde2020/hadoop-namenode:2.0.0-hadoop2.7.4-java8   "/entrypoint.sh /run…"   2 weeks ago          Exited (137) 3 days ago                                                      hivedockersetup-namenode-1
+de485b5b8f37   bde2020/hive-metastore-postgresql:2.3.0           "/docker-entrypoint.…"   2 weeks ago          Exited (0) 3 days ago                                                        hivedockersetup-hive-metastore-postgresql-1
+d602b3675a63   bde2020/hadoop-datanode:2.0.0-hadoop2.7.4-java8   "/entrypoint.sh /run…"   2 weeks ago          Exited (137) 3 days ago                                                      hivedockersetup-datanode-1
+8788990131bb   shawnzhu/prestodb:0.181                           "./bin/launcher run"     2 weeks ago          Exited (143) 3 days ago                                                      hivedockersetup-presto-coordinator-1
+765ff608a585   bde2020/hive:2.3.2-postgresql-metastore           "entrypoint.sh /bin/…"   2 weeks ago          Exited (137) 3 days ago                                                      hivedockersetup-hive-server-1
+ed0ebfffb255   bde2020/hive:2.3.2-postgresql-metastore           "entrypoint.sh /opt/…"   2 weeks ago          Exited (143) 3 days ago                                                      hivedockersetup-hive-metastore-1
+88508f97e068   hive-metastore-master-spark                       "/init-spark.sh"         2 weeks ago          Exited (1) 3 days ago                                                        hive-metastore-master-spark-1
+ed8ce20b54cf   hive-metastore-master-hive                        "/init-hive.sh"          2 weeks ago          Exited (137) 3 days ago                                                      hive-metastore-master-hive-1
+4c470bf1118b   postgres:10                                       "docker-entrypoint.s…"   2 weeks ago          Exited (0) 3 days ago                                                        hive-metastore-master-postgres-1
+f367e14929dd   postgres:latest                                   "docker-entrypoint.s…"   5 weeks ago          Exited (0) 5 weeks ago                                                       postgres-V8jg
+
+
+-- copy local file to container
+E:\iNeuron\Hive\HiveSetup_reSetup\Hive>docker cp sales_order_data.csv 926ea2b9e6dc:home
+
+-- start hive server
+E:\iNeuron\Hive\HiveSetup_reSetup\Hive>docker compose exec hive-server bash
+
+-- create a hdfs path
+root@926ea2b9e6dc:/opt# hadoop fs -mkdir /user/dataset
+
+-- copy file in container to hdfs path
+root@926ea2b9e6dc:/opt# hadoop fs -put -f /home/sales_order_data.csv /user/dataset
+
+-- to see if the files are copied
+root@926ea2b9e6dc:/opt# hadoop fs -ls /user/dataset
+Found 1 items
+-rw-r--r--   3 root supergroup     360233 2023-02-20 17:40 /user/dataset/sales_order_data.csv
+
+
+-- start hive shell
+root@926ea2b9e6dc:/opt# /opt/hive/bin/beeline -u jdbc:hive2://localhost:10000
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/opt/hive/lib/log4j-slf4j-impl-2.6.2.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/opt/hadoop-2.7.4/share/hadoop/common/lib/slf4j-log4j12-1.7.10.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+Connecting to jdbc:hive2://localhost:10000
+Connected to: Apache Hive (version 2.3.2)
+Driver: Hive JDBC (version 2.3.2)
+Transaction isolation: TRANSACTION_REPEATABLE_READ
+Beeline version 2.3.2 by Apache Hive
+
+
+
+-- create db
+0: jdbc:hive2://localhost:10000> create database hive_assignment;
+No rows affected (2.205 seconds)
+0: jdbc:hive2://localhost:10000> use hive_assignment;
+No rows affected (0.058 seconds)
+0: jdbc:hive2://localhost:10000> create table sales_order_csv
+. . . . . . . . . . . . . . . .> (
+. . . . . . . . . . . . . . . .> ORDERNUMBER int,
+. . . . . . . . . . . . . . . .> QUANTITYORDERED int,
+. . . . . . . . . . . . . . . .> PRICEEACH float,
+. . . . . . . . . . . . . . . .> ORDERLINENUMBER int,
+. . . . . . . . . . . . . . . .> SALES float,
+. . . . . . . . . . . . . . . .> STATUS string,
+. . . . . . . . . . . . . . . .> QTR_ID int,
+. . . . . . . . . . . . . . . .> MONTH_ID int,
+. . . . . . . . . . . . . . . .> YEAR_ID int,
+. . . . . . . . . . . . . . . .> PRODUCTLINE string,
+. . . . . . . . . . . . . . . .> MSRP int,
+. . . . . . . . . . . . . . . .> PRODUCTCODE string,
+. . . . . . . . . . . . . . . .> PHONE string,
+. . . . . . . . . . . . . . . .> CITY string,
+. . . . . . . . . . . . . . . .> STATE string,
+. . . . . . . . . . . . . . . .> POSTALCODE string,
+. . . . . . . . . . . . . . . .> COUNTRY string,
+. . . . . . . . . . . . . . . .> TERRITORY string,
+. . . . . . . . . . . . . . . .> CONTACTLASTNAME string,
+. . . . . . . . . . . . . . . .> CONTACTFIRSTNAME string,
+. . . . . . . . . . . . . . . .> DEALSIZE string
+. . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . .> row format delimited
+. . . . . . . . . . . . . . . .> fields terminated by ','
+. . . . . . . . . . . . . . . .> tblproperties("skip.header.line.count"="1")
+. . . . . . . . . . . . . . . .> ;
+No rows affected (1.869 seconds)
+
+-- verify path of the table
+0: jdbc:hive2://localhost:10000> describe formatted sales_order_csv;
++-------------------------------+----------------------------------------------------+-----------------------------+
+|           col_name            |                     data_type                      |           comment           |
++-------------------------------+----------------------------------------------------+-----------------------------+
+| # col_name                    | data_type                                          | comment                     |
+|                               | NULL                                               | NULL                        |
+| ordernumber                   | int                                                |                             |
+| quantityordered               | int                                                |                             |
+| priceeach                     | float                                              |                             |
+| orderlinenumber               | int                                                |                             |
+| sales                         | float                                              |                             |
+| status                        | string                                             |                             |
+| qtr_id                        | int                                                |                             |
+| month_id                      | int                                                |                             |
+| year_id                       | int                                                |                             |
+| productline                   | string                                             |                             |
+| msrp                          | int                                                |                             |
+| productcode                   | string                                             |                             |
+| phone                         | string                                             |                             |
+| city                          | string                                             |                             |
+| state                         | string                                             |                             |
+| postalcode                    | string                                             |                             |
+| country                       | string                                             |                             |
+| territory                     | string                                             |                             |
+| contactlastname               | string                                             |                             |
+| contactfirstname              | string                                             |                             |
+| dealsize                      | string                                             |                             |
+|                               | NULL                                               | NULL                        |
+| # Detailed Table Information  | NULL                                               | NULL                        |
+| Database:                     | hive_assignment                                    | NULL                        |
+| Owner:                        | root                                               | NULL                        |
+| CreateTime:                   | Mon Feb 20 17:41:56 UTC 2023                       | NULL                        |
+| LastAccessTime:               | UNKNOWN                                            | NULL                        |
+| Retention:                    | 0                                                  | NULL                        |
+| Location:                     | hdfs://namenode:8020/user/hive/warehouse/hive_assignment.db/sales_order_csv | NULL                        |
+| Table Type:                   | MANAGED_TABLE                                      | NULL                        |
+| Table Parameters:             | NULL                                               | NULL                        |
+|                               | COLUMN_STATS_ACCURATE                              | {\"BASIC_STATS\":\"true\"}  |
+|                               | numFiles                                           | 0                           |
+|                               | numRows                                            | 0                           |
+|                               | rawDataSize                                        | 0                           |
+|                               | skip.header.line.count                             | 1                           |
+|                               | totalSize                                          | 0                           |
+|                               | transient_lastDdlTime                              | 1676914916                  |
+|                               | NULL                                               | NULL                        |
+| # Storage Information         | NULL                                               | NULL                        |
+| SerDe Library:                | org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe | NULL                        |
+| InputFormat:                  | org.apache.hadoop.mapred.TextInputFormat           | NULL                        |
+| OutputFormat:                 | org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat | NULL                        |
+| Compressed:                   | No                                                 | NULL                        |
+| Num Buckets:                  | -1                                                 | NULL                        |
+| Bucket Columns:               | []                                                 | NULL                        |
+| Sort Columns:                 | []                                                 | NULL                        |
+| Storage Desc Params:          | NULL                                               | NULL                        |
+|                               | field.delim                                        | ,                           |
+|                               | serialization.format                               | ,                           |
++-------------------------------+----------------------------------------------------+-----------------------------+
+52 rows selected (0.576 seconds)
+
+
+-- load file from hdfs to table
+0: jdbc:hive2://localhost:10000> load data inpath '/user/dataset/sales_order_data.csv/' into table sales_order_csv;
+
+-- query the contents
+0: jdbc:hive2://localhost:10000> select * from sales_order_csv limit 5;
++------------------------------+----------------------------------+----------------------------+----------------------------------+------------------------+-------------------------+-------------------------+---------------------------+--------------------------+------------------------------+-----------------------+------------------------------+------------------------+-----------------------+------------------------+-----------------------------+--------------------------+----------------------------+----------------------------------+-----------------------------------+---------------------------+
+| sales_order_csv.ordernumber  | sales_order_csv.quantityordered  | sales_order_csv.priceeach  | sales_order_csv.orderlinenumber  | sales_order_csv.sales  | sales_order_csv.status  | sales_order_csv.qtr_id  | sales_order_csv.month_id  | sales_order_csv.year_id  | sales_order_csv.productline  | sales_order_csv.msrp  | sales_order_csv.productcode  | sales_order_csv.phone  | sales_order_csv.city  | sales_order_csv.state  | sales_order_csv.postalcode  | sales_order_csv.country  | sales_order_csv.territory  | sales_order_csv.contactlastname  | sales_order_csv.contactfirstname  | sales_order_csv.dealsize  |
++------------------------------+----------------------------------+----------------------------+----------------------------------+------------------------+-------------------------+-------------------------+---------------------------+--------------------------+------------------------------+-----------------------+------------------------------+------------------------+-----------------------+------------------------+-----------------------------+--------------------------+----------------------------+----------------------------------+-----------------------------------+---------------------------+
+| 10107                        | 30                               | 95.7                       | 2                                | 2871.0                 | Shipped                 | 1                       | 2                         | 2003                     | Motorcycles                  | 95                    | S10_1678                     | 2125557818             | NYC                   | NY                     | 10022                       | USA                      | NA                         | Yu                               | Kwai                              | Small                     |
+| 10121                        | 34                               | 81.35                      | 5                                | 2765.9                 | Shipped                 | 2                       | 5                         | 2003                     | Motorcycles                  | 95                    | S10_1678                     | 26.47.1555             | Reims                 |                        | 51100                       | France                   | EMEA                       | Henriot                          | Paul                              | Small                     |
+| 10134                        | 41                               | 94.74                      | 2                                | 3884.34                | Shipped                 | 3                       | 7                         | 2003                     | Motorcycles                  | 95                    | S10_1678                     | +33 1 46 62 7555       | Paris                 |                        | 75508                       | France                   | EMEA                       | Da Cunha                         | Daniel                            | Medium                    |
+| 10145                        | 45                               | 83.26                      | 6                                | 3746.7                 | Shipped                 | 3                       | 8                         | 2003                     | Motorcycles                  | 95                    | S10_1678                     | 6265557265             | Pasadena              | CA                     | 90003                       | USA                      | NA                         | Young                            | Julie                             | Medium                    |
+| 10159                        | 49                               | 100.0                      | 14                               | 5205.27                | Shipped                 | 4                       | 10                        | 2003                     | Motorcycles                  | 95                    | S10_1678                     | 6505551386             | San Francisco         | CA                     |                             | USA                      | NA                         | Brown                            | Julie                             | Medium                    |
++------------------------------+----------------------------------+----------------------------+----------------------------------+------------------------+-------------------------+-------------------------+---------------------------+--------------------------+------------------------------+-----------------------+------------------------------+------------------------+-----------------------+------------------------+-----------------------------+--------------------------+----------------------------+----------------------------------+-----------------------------------+---------------------------+
+5 rows selected (0.469 seconds)
+0: jdbc:hive2://localhost:10000>

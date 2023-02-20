@@ -1,0 +1,345 @@
+Microsoft Windows [Version 10.0.19044.2604]
+(c) Microsoft Corporation. All rights reserved.
+
+E:\iNeuron\Hive\HiveSetup\Hive>docker-compose up -d
+[+] Running 6/6
+ - Network hive_default                 Created                                                                    0.1s
+ - Container namenode                   Started                                                                    2.4s
+ - Container datanode                   Started                                                                    3.2s
+ - Container hive-metastore-postgresql  Started                                                                    3.8s
+ - Container hive-metastore             Started                                                                    4.8s
+ - Container hive-server                Started                                                                    5.9s
+
+E:\iNeuron\Hive\HiveSetup\Hive>docker ps -a
+CONTAINER ID   IMAGE                                             COMMAND                  CREATED              STATUS                    PORTS                                          NAMES
+14a335bc10c8   bde2020/hive:2.3.2-postgresql-metastore           "entrypoint.sh /bin/…"   About a minute ago   Up 53 seconds             0.0.0.0:10000->10000/tcp, 10002/tcp            hive-server
+91001051512e   bde2020/hive:2.3.2-postgresql-metastore           "entrypoint.sh /opt/…"   About a minute ago   Up 54 seconds             10000/tcp, 0.0.0.0:9083->9083/tcp, 10002/tcp   hive-metastore
+96af85f09b01   bde2020/hive-metastore-postgresql:2.3.0           "/docker-entrypoint.…"   About a minute ago   Up 55 seconds             5432/tcp                                       hive-metastore-postgresql
+47943d49396b   bde2020/hadoop-datanode:2.0.0-hadoop2.7.4-java8   "/entrypoint.sh /run…"   About a minute ago   Up 56 seconds (healthy)   0.0.0.0:50075->50075/tcp                       datanode
+19a3c8799757   bde2020/hadoop-namenode:2.0.0-hadoop2.7.4-java8   "/entrypoint.sh /run…"   About a minute ago   Up 57 seconds (healthy)   0.0.0.0:50070->50070/tcp                       namenode
+13cf73511206   bde2020/hadoop-namenode:2.0.0-hadoop2.7.4-java8   "/entrypoint.sh /run…"   2 weeks ago          Exited (137) 3 days ago                                                  hivedockersetup-namenode-1
+de485b5b8f37   bde2020/hive-metastore-postgresql:2.3.0           "/docker-entrypoint.…"   2 weeks ago          Exited (0) 3 days ago                                                    hivedockersetup-hive-metastore-postgresql-1
+d602b3675a63   bde2020/hadoop-datanode:2.0.0-hadoop2.7.4-java8   "/entrypoint.sh /run…"   2 weeks ago          Exited (137) 3 days ago                                                  hivedockersetup-datanode-1
+8788990131bb   shawnzhu/prestodb:0.181                           "./bin/launcher run"     2 weeks ago          Exited (143) 3 days ago                                                  hivedockersetup-presto-coordinator-1
+765ff608a585   bde2020/hive:2.3.2-postgresql-metastore           "entrypoint.sh /bin/…"   2 weeks ago          Exited (137) 3 days ago                                                  hivedockersetup-hive-server-1
+ed0ebfffb255   bde2020/hive:2.3.2-postgresql-metastore           "entrypoint.sh /opt/…"   2 weeks ago          Exited (143) 3 days ago                                                  hivedockersetup-hive-metastore-1
+88508f97e068   hive-metastore-master-spark                       "/init-spark.sh"         2 weeks ago          Exited (1) 3 days ago                                                    hive-metastore-master-spark-1
+ed8ce20b54cf   hive-metastore-master-hive                        "/init-hive.sh"          2 weeks ago          Exited (137) 3 days ago                                                  hive-metastore-master-hive-1
+4c470bf1118b   postgres:10                                       "docker-entrypoint.s…"   2 weeks ago          Exited (0) 3 days ago                                                    hive-metastore-master-postgres-1
+f367e14929dd   postgres:latest                                   "docker-entrypoint.s…"   5 weeks ago          Exited (0) 5 weeks ago                                                   postgres-V8jg
+
+E:\iNeuron\Hive\HiveSetup\Hive>docker ps -a
+CONTAINER ID   IMAGE                                             COMMAND                  CREATED              STATUS                        PORTS                                          NAMES
+14a335bc10c8   bde2020/hive:2.3.2-postgresql-metastore           "entrypoint.sh /bin/…"   About a minute ago   Up About a minute             0.0.0.0:10000->10000/tcp, 10002/tcp            hive-server
+91001051512e   bde2020/hive:2.3.2-postgresql-metastore           "entrypoint.sh /opt/…"   About a minute ago   Up About a minute             10000/tcp, 0.0.0.0:9083->9083/tcp, 10002/tcp   hive-metastore
+96af85f09b01   bde2020/hive-metastore-postgresql:2.3.0           "/docker-entrypoint.…"   About a minute ago   Up About a minute             5432/tcp                                       hive-metastore-postgresql
+47943d49396b   bde2020/hadoop-datanode:2.0.0-hadoop2.7.4-java8   "/entrypoint.sh /run…"   About a minute ago   Up About a minute (healthy)   0.0.0.0:50075->50075/tcp                       datanode
+19a3c8799757   bde2020/hadoop-namenode:2.0.0-hadoop2.7.4-java8   "/entrypoint.sh /run…"   About a minute ago   Up About a minute (healthy)   0.0.0.0:50070->50070/tcp                       namenode
+13cf73511206   bde2020/hadoop-namenode:2.0.0-hadoop2.7.4-java8   "/entrypoint.sh /run…"   2 weeks ago          Exited (137) 3 days ago                                                      hivedockersetup-namenode-1
+de485b5b8f37   bde2020/hive-metastore-postgresql:2.3.0           "/docker-entrypoint.…"   2 weeks ago          Exited (0) 3 days ago                                                        hivedockersetup-hive-metastore-postgresql-1
+d602b3675a63   bde2020/hadoop-datanode:2.0.0-hadoop2.7.4-java8   "/entrypoint.sh /run…"   2 weeks ago          Exited (137) 3 days ago                                                      hivedockersetup-datanode-1
+8788990131bb   shawnzhu/prestodb:0.181                           "./bin/launcher run"     2 weeks ago          Exited (143) 3 days ago                                                      hivedockersetup-presto-coordinator-1
+765ff608a585   bde2020/hive:2.3.2-postgresql-metastore           "entrypoint.sh /bin/…"   2 weeks ago          Exited (137) 3 days ago                                                      hivedockersetup-hive-server-1
+ed0ebfffb255   bde2020/hive:2.3.2-postgresql-metastore           "entrypoint.sh /opt/…"   2 weeks ago          Exited (143) 3 days ago                                                      hivedockersetup-hive-metastore-1
+88508f97e068   hive-metastore-master-spark                       "/init-spark.sh"         2 weeks ago          Exited (1) 3 days ago                                                        hive-metastore-master-spark-1
+ed8ce20b54cf   hive-metastore-master-hive                        "/init-hive.sh"          2 weeks ago          Exited (137) 3 days ago                                                      hive-metastore-master-hive-1
+4c470bf1118b   postgres:10                                       "docker-entrypoint.s…"   2 weeks ago          Exited (0) 3 days ago                                                        hive-metastore-master-postgres-1
+f367e14929dd   postgres:latest                                   "docker-entrypoint.s…"   5 weeks ago          Exited (0) 5 weeks ago                                                       postgres-V8jg
+
+E:\iNeuron\Hive\HiveSetup\Hive>docker ps -a
+CONTAINER ID   IMAGE                                             COMMAND                  CREATED              STATUS                        PORTS                                          NAMES
+14a335bc10c8   bde2020/hive:2.3.2-postgresql-metastore           "entrypoint.sh /bin/…"   About a minute ago   Up About a minute             0.0.0.0:10000->10000/tcp, 10002/tcp            hive-server
+91001051512e   bde2020/hive:2.3.2-postgresql-metastore           "entrypoint.sh /opt/…"   About a minute ago   Up About a minute             10000/tcp, 0.0.0.0:9083->9083/tcp, 10002/tcp   hive-metastore
+96af85f09b01   bde2020/hive-metastore-postgresql:2.3.0           "/docker-entrypoint.…"   About a minute ago   Up About a minute             5432/tcp                                       hive-metastore-postgresql
+47943d49396b   bde2020/hadoop-datanode:2.0.0-hadoop2.7.4-java8   "/entrypoint.sh /run…"   About a minute ago   Up About a minute (healthy)   0.0.0.0:50075->50075/tcp                       datanode
+19a3c8799757   bde2020/hadoop-namenode:2.0.0-hadoop2.7.4-java8   "/entrypoint.sh /run…"   About a minute ago   Up About a minute (healthy)   0.0.0.0:50070->50070/tcp                       namenode
+13cf73511206   bde2020/hadoop-namenode:2.0.0-hadoop2.7.4-java8   "/entrypoint.sh /run…"   2 weeks ago          Exited (137) 3 days ago                                                      hivedockersetup-namenode-1
+de485b5b8f37   bde2020/hive-metastore-postgresql:2.3.0           "/docker-entrypoint.…"   2 weeks ago          Exited (0) 3 days ago                                                        hivedockersetup-hive-metastore-postgresql-1
+d602b3675a63   bde2020/hadoop-datanode:2.0.0-hadoop2.7.4-java8   "/entrypoint.sh /run…"   2 weeks ago          Exited (137) 3 days ago                                                      hivedockersetup-datanode-1
+8788990131bb   shawnzhu/prestodb:0.181                           "./bin/launcher run"     2 weeks ago          Exited (143) 3 days ago                                                      hivedockersetup-presto-coordinator-1
+765ff608a585   bde2020/hive:2.3.2-postgresql-metastore           "entrypoint.sh /bin/…"   2 weeks ago          Exited (137) 3 days ago                                                      hivedockersetup-hive-server-1
+ed0ebfffb255   bde2020/hive:2.3.2-postgresql-metastore           "entrypoint.sh /opt/…"   2 weeks ago          Exited (143) 3 days ago                                                      hivedockersetup-hive-metastore-1
+88508f97e068   hive-metastore-master-spark                       "/init-spark.sh"         2 weeks ago          Exited (1) 3 days ago                                                        hive-metastore-master-spark-1
+ed8ce20b54cf   hive-metastore-master-hive                        "/init-hive.sh"          2 weeks ago          Exited (137) 3 days ago                                                      hive-metastore-master-hive-1
+4c470bf1118b   postgres:10                                       "docker-entrypoint.s…"   2 weeks ago          Exited (0) 3 days ago                                                        hive-metastore-master-postgres-1
+f367e14929dd   postgres:latest                                   "docker-entrypoint.s…"   5 weeks ago          Exited (0) 5 weeks ago                                                       postgres-V8jg
+
+E:\iNeuron\Hive\HiveSetup\Hive>docker ps -a
+CONTAINER ID   IMAGE                                             COMMAND                  CREATED              STATUS                        PORTS                                          NAMES
+14a335bc10c8   bde2020/hive:2.3.2-postgresql-metastore           "entrypoint.sh /bin/…"   About a minute ago   Up About a minute             0.0.0.0:10000->10000/tcp, 10002/tcp            hive-server
+91001051512e   bde2020/hive:2.3.2-postgresql-metastore           "entrypoint.sh /opt/…"   About a minute ago   Up About a minute             10000/tcp, 0.0.0.0:9083->9083/tcp, 10002/tcp   hive-metastore
+96af85f09b01   bde2020/hive-metastore-postgresql:2.3.0           "/docker-entrypoint.…"   About a minute ago   Up About a minute             5432/tcp                                       hive-metastore-postgresql
+47943d49396b   bde2020/hadoop-datanode:2.0.0-hadoop2.7.4-java8   "/entrypoint.sh /run…"   About a minute ago   Up About a minute (healthy)   0.0.0.0:50075->50075/tcp                       datanode
+19a3c8799757   bde2020/hadoop-namenode:2.0.0-hadoop2.7.4-java8   "/entrypoint.sh /run…"   About a minute ago   Up About a minute (healthy)   0.0.0.0:50070->50070/tcp                       namenode
+13cf73511206   bde2020/hadoop-namenode:2.0.0-hadoop2.7.4-java8   "/entrypoint.sh /run…"   2 weeks ago          Exited (137) 3 days ago                                                      hivedockersetup-namenode-1
+de485b5b8f37   bde2020/hive-metastore-postgresql:2.3.0           "/docker-entrypoint.…"   2 weeks ago          Exited (0) 3 days ago                                                        hivedockersetup-hive-metastore-postgresql-1
+d602b3675a63   bde2020/hadoop-datanode:2.0.0-hadoop2.7.4-java8   "/entrypoint.sh /run…"   2 weeks ago          Exited (137) 3 days ago                                                      hivedockersetup-datanode-1
+8788990131bb   shawnzhu/prestodb:0.181                           "./bin/launcher run"     2 weeks ago          Exited (143) 3 days ago                                                      hivedockersetup-presto-coordinator-1
+765ff608a585   bde2020/hive:2.3.2-postgresql-metastore           "entrypoint.sh /bin/…"   2 weeks ago          Exited (137) 3 days ago                                                      hivedockersetup-hive-server-1
+ed0ebfffb255   bde2020/hive:2.3.2-postgresql-metastore           "entrypoint.sh /opt/…"   2 weeks ago          Exited (143) 3 days ago                                                      hivedockersetup-hive-metastore-1
+88508f97e068   hive-metastore-master-spark                       "/init-spark.sh"         2 weeks ago          Exited (1) 3 days ago                                                        hive-metastore-master-spark-1
+ed8ce20b54cf   hive-metastore-master-hive                        "/init-hive.sh"          2 weeks ago          Exited (137) 3 days ago                                                      hive-metastore-master-hive-1
+4c470bf1118b   postgres:10                                       "docker-entrypoint.s…"   2 weeks ago          Exited (0) 3 days ago                                                        hive-metastore-master-postgres-1
+f367e14929dd   postgres:latest                                   "docker-entrypoint.s…"   5 weeks ago          Exited (0) 5 weeks ago                                                       postgres-V8jg
+
+E:\iNeuron\Hive\HiveSetup\Hive>docker cp E:\iNeuron\Hive\HiveSetup\Hive\employee 14a335bc10c8:home
+
+E:\iNeuron\Hive\HiveSetup\Hive>docker compose exec hive-server bash
+root@14a335bc10c8:/opt# /home/data# ls
+bash: /home/data#: No such file or directory
+root@14a335bc10c8:/opt# hadoop fs -mkdir /user/dataset
+root@14a335bc10c8:/opt# hadoop fs -put -f /home/data /user/dataset
+put: `/home/data': No such file or directory
+root@14a335bc10c8:/opt# hadoop fs -put -f /home/employee /user/dataset
+root@14a335bc10c8:/opt# hadoop fs -ls /user/dataset
+Found 1 items
+drwxr-xr-x   - root supergroup          0 2023-02-20 17:08 /user/dataset/employee
+root@14a335bc10c8:/opt# hadoop fs -ls /user/dataset/employee
+Found 2 items
+-rw-r--r--   3 root supergroup        240 2023-02-20 17:08 /user/dataset/employee/employee.csv
+-rw-r--r--   3 root supergroup        402 2023-02-20 17:08 /user/dataset/employee/employee_table.hql
+root@14a335bc10c8:/opt# /opt/hive/bin/beeline -u jdbc:hive2://localhost:10000
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/opt/hive/lib/log4j-slf4j-impl-2.6.2.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/opt/hadoop-2.7.4/share/hadoop/common/lib/slf4j-log4j12-1.7.10.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+Connecting to jdbc:hive2://localhost:10000
+Connected to: Apache Hive (version 2.3.2)
+Driver: Hive JDBC (version 2.3.2)
+Transaction isolation: TRANSACTION_REPEATABLE_READ
+Beeline version 2.3.2 by Apache Hive
+0: jdbc:hive2://localhost:10000> create table employee (
+. . . . . . . . . . . . . . . .>   eid int,
+. . . . . . . . . . . . . . . .>   ename string,
+. . . . . . . . . . . . . . . .>   age int,
+. . . . . . . . . . . . . . . .>   jobtype string,
+. . . . . . . . . . . . . . . .>   storeid int,
+. . . . . . . . . . . . . . . .>   storelocation string,
+. . . . . . . . . . . . . . . .>   salary bigint,
+. . . . . . . . . . . . . . . .>   yrsofexp int
+. . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . .> ;
+No rows affected (4.667 seconds)
+0: jdbc:hive2://localhost:10000> show tables;
++-----------+
+| tab_name  |
++-----------+
+| employee  |
++-----------+
+1 row selected (0.641 seconds)
+0: jdbc:hive2://localhost:10000> load data inpath '/user/dataset/employee/employee.csv' overwrite into table employee;
+No rows affected (2.374 seconds)
+0: jdbc:hive2://localhost:10000> select * from employee;
++---------------+-----------------+---------------+-------------------+-------------------+-------------------------+------------------+--------------------+
+| employee.eid  | employee.ename  | employee.age  | employee.jobtype  | employee.storeid  | employee.storelocation  | employee.salary  | employee.yrsofexp  |
++---------------+-----------------+---------------+-------------------+-------------------+-------------------------+------------------+--------------------+
+| NULL          | NULL            | NULL          | NULL              | NULL              | NULL                    | NULL             | NULL               |
+| NULL          | NULL            | NULL          | NULL              | NULL              | NULL                    | NULL             | NULL               |
+| NULL          | NULL            | NULL          | NULL              | NULL              | NULL                    | NULL             | NULL               |
+| NULL          | NULL            | NULL          | NULL              | NULL              | NULL                    | NULL             | NULL               |
+| NULL          | NULL            | NULL          | NULL              | NULL              | NULL                    | NULL             | NULL               |
++---------------+-----------------+---------------+-------------------+-------------------+-------------------------+------------------+--------------------+
+5 rows selected (3.17 seconds)
+0: jdbc:hive2://localhost:10000> load data inpath '/user/dataset/employee/employee.csv' overwrite into table employee;
+Error: Error while compiling statement: FAILED: SemanticException Line 1:17 Invalid path ''/user/dataset/employee/employee.csv'': No files matching path hdfs://namenode:8020/user/dataset/employee/employee.csv (state=42000,code=40000)
+0: jdbc:hive2://localhost:10000> select * from employee;
++---------------+-----------------+---------------+-------------------+-------------------+-------------------------+------------------+--------------------+
+| employee.eid  | employee.ename  | employee.age  | employee.jobtype  | employee.storeid  | employee.storelocation  | employee.salary  | employee.yrsofexp  |
++---------------+-----------------+---------------+-------------------+-------------------+-------------------------+------------------+--------------------+
+| NULL          | NULL            | NULL          | NULL              | NULL              | NULL                    | NULL             | NULL               |
+| NULL          | NULL            | NULL          | NULL              | NULL              | NULL                    | NULL             | NULL               |
+| NULL          | NULL            | NULL          | NULL              | NULL              | NULL                    | NULL             | NULL               |
+| NULL          | NULL            | NULL          | NULL              | NULL              | NULL                    | NULL             | NULL               |
+| NULL          | NULL            | NULL          | NULL              | NULL              | NULL                    | NULL             | NULL               |
++---------------+-----------------+---------------+-------------------+-------------------+-------------------------+------------------+--------------------+
+5 rows selected (0.38 seconds)
+0: jdbc:hive2://localhost:10000> show tables;
++-----------+://localhost:10000> shot
+| tab_name  |
++-----------+
+| employee  |
++-----------+
+1 row selected (0.073 seconds)
+0: jdbc:hive2://localhost:10000> drop table employee;
+No rows affected (3.158 seconds)
+0: jdbc:hive2://localhost:10000> show tables;
++-----------+
+| tab_name  |
++-----------+
++-----------+
+No rows selected (0.059 seconds)
+0: jdbc:hive2://localhost:10000> create table employee (
+. . . . . . . . . . . . . . . .> eid int,
+. . . . . . . . . . . . . . . .> ename string,
+. . . . . . . . . . . . . . . .>   age int,
+. . . . . . . . . . . . . . . .>   jobtype string,
+. . . . . . . . . . . . . . . .>   storeid int,
+. . . . . . . . . . . . . . . .>   storelocation string,
+. . . . . . . . . . . . . . . .>   salary bigint,
+. . . . . . . . . . . . . . . .>   yrsofexp int
+. . . . . . . . . . . . . . . .> loadsl
+. . . . . . . . . . . . . . . .> row format delimited
+. . . . . . . . . . . . . . . .> fields terminated by ','
+. . . . . . . . . . . . . . . .> lines terminated by '\n';
+. . . . . . . . . . . . . . . .>
+. . . . . . . . . . . . . . . .> losf
+. . . . . . . . . . . . . . . .>
+. . . . . . . . . . . . . . . .>
+. . . . . . . . . . . . . . . .>
+. . . . . . . . . . . . . . . .>
+. . . . . . . . . . . . . . . .>
+. . . . . . . . . . . . . . . .>
+. . . . . . . . . . . . . . . .>
+. . . . . . . . . . . . . . . .>
+. . . . . . . . . . . . . . . .>
+. . . . . . . . . . . . . . . .>
+. . . . . . . . . . . . . . . .>
+. . . . . . . . . . . . . . . .>
+. . . . . . . . . . . . . . . .>
+. . . . . . . . . . . . . . . .>
+. . . . . . . . . . . . . . . .>
+. . . . . . . . . . . . . . . .>
+. . . . . . . . . . . . . . . .>
+E:\iNeuron\Hive\HiveSetup\Hive>docker compose exec hive-server bash
+root@14a335bc10c8:/opt# hive
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/opt/hive/lib/log4j-slf4j-impl-2.6.2.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/opt/hadoop-2.7.4/share/hadoop/common/lib/slf4j-log4j12-1.7.10.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+
+Logging initialized using configuration in file:/opt/hive/conf/hive-log4j2.properties Async: true
+Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. spark, tez) or using Hive 1.X releases.
+hive> create database if not exists testdb;
+OK
+Time taken: 1.267 seconds
+hive> use testdb;
+OK
+Time taken: 0.049 seconds
+hive> create table employee (
+    >   eid int,
+    >   ename string,
+    >   age int,
+    >   jobtype string,
+    >   storeid int,
+    >   storelocation string,
+    >   salary bigint,
+    >   yrsofexp int
+    > )
+    > row format delimited
+    > fields terminated by ','
+    > lines terminated by '\n'
+    > stored ale employeel
+    > : Execution Error, return code 1 from org.apache.hadoop.hive.ql.exec.DDLTask. AlreadyExistsException(message:Table employee already exists)
+    > drop tabe
+    >
+    >
+    >
+    >
+    >
+    >
+root@14a335bc10c8:/opt# hive
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/opt/hive/lib/log4j-slf4j-impl-2.6.2.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/opt/hadoop-2.7.4/share/hadoop/common/lib/slf4j-log4j12-1.7.10.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+
+Logging initialized using configuration in file:/opt/hive/conf/hive-log4j2.properties Async: true
+Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. spark, tez) or using Hive 1.X releases.
+hive> show tables;
+OK
+employee
+Time taken: 1.395 seconds, Fetched: 1 row(s)
+hive> drop table employee;
+OK
+Time taken: 0.481 seconds
+hive> create database if not exists testdb;
+OK
+Time taken: 0.051 seconds
+hive> use testdb;
+OK
+Time taken: 0.04 seconds
+hive> create table employee (
+    >   eid int,
+    >   ename string,
+    >   age int,
+    >   jobtype string,
+    >   storeid int,
+    >   storelocation string,
+    >   salary bigint,
+    >   yrsofexp int
+    > )
+    > row format delimited
+    > fields terminated by ','
+    > lines terminated by '\n'
+    > stored as textfile location 'hdfs://namenode:8020/user/hive/warehouse/testdb.db/employee';
+FAILED: Execution Error, return code 1 from org.apache.hadoop.hive.ql.exec.DDLTask. AlreadyExistsException(message:Table employee already exists)
+hive> use testdb;
+OK
+Time taken: 0.026 seconds
+hive> create table employeeT (
+    >   eid int,
+    >   ename string,
+    >   age int,
+    >   jobtype string,
+    >   storeid int,
+    >   storelocation string,
+    >   salary bigint,
+    >   yrsofexp int
+    > )
+    > row format delimited
+    > fields terminated by ','
+    > lines terminated by '\n'
+    > stored as textfile location 'hdfs://namenode:8020/user/hive/warehouse/testdb.db/employee';
+OK
+Time taken: 0.274 seconds
+hive> select * from employeeT;
+OK
+1       Rudolf Bardin   30      cashier 100     New York        40000   5
+2       Rob Trask       22      driver  100     New York        50000   4
+3       Madie Nakamura  20      janitor 100     New York        30000   4
+4       Alesha Huntley  40      cashier 101     Los Angeles     40000   10
+5       Iva Moose       50      cashier 102     Phoenix 50000   20
+Time taken: 2.41 seconds, Fetched: 5 row(s)
+hive> describe formatted employeeT;
+OK
+# col_name              data_type               comment
+
+eid                     int
+ename                   string
+age                     int
+jobtype                 string
+storeid                 int
+storelocation           string
+salary                  bigint
+yrsofexp                int
+
+# Detailed Table Information
+Database:               testdb
+Owner:                  root
+CreateTime:             Mon Feb 20 17:22:22 UTC 2023
+LastAccessTime:         UNKNOWN
+Retention:              0
+Location:               hdfs://namenode:8020/user/hive/warehouse/testdb.db/employee
+Table Type:             MANAGED_TABLE
+Table Parameters:
+        numFiles                1
+        totalSize               240
+        transient_lastDdlTime   1676913742
+
+# Storage Information
+SerDe Library:          org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
+InputFormat:            org.apache.hadoop.mapred.TextInputFormat
+OutputFormat:           org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
+Compressed:             No
+Num Buckets:            -1
+Bucket Columns:         []
+Sort Columns:           []
+Storage Desc Params:
+        field.delim             ,
+        line.delim              \n
+        serialization.format    ,
+Time taken: 0.14 seconds, Fetched: 36 row(s)
+hive>
