@@ -1,0 +1,264 @@
+-- start hive server
+E:\iNeuron\Hive\Hive_ClassSteps_Practice>docker compose exec hive-server bash
+root@bd3851c6bbe6:/opt# hive
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/opt/hive/lib/log4j-slf4j-impl-2.6.2.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/opt/hadoop-2.7.4/share/hadoop/common/lib/slf4j-log4j12-1.7.10.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+
+Logging initialized using configuration in file:/opt/hive/conf/hive-log4j2.properties Async: true
+Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. spark, tez) or using Hive 1.X releases.
+hive> show databases;
+OK
+default
+Time taken: 1.748 seconds, Fetched: 1 row(s)
+hive> create database hive_class_b1;
+OK
+Time taken: 0.742 seconds
+hive> show databases;
+OK
+default
+hive_class_b1
+Time taken: 0.038 seconds, Fetched: 2 row(s)
+hive> use hive_class_b1;
+OK
+Time taken: 0.102 seconds
+hive>
+    > create table department_data
+    >     (
+    >     dept_id int,
+    >     dept_name string,
+    >     manager_id int,
+    >     salary int)
+    >     row format delimited
+    >     fields terminated by ',';
+OK
+Time taken: 1.148 seconds
+hive> show tables;
+OK
+department_data
+Time taken: 0.067 seconds, Fetched: 1 row(s)
+hive> describe department_data;
+OK
+dept_id                 int
+dept_name               string
+manager_id              int
+salary                  int
+Time taken: 0.353 seconds, Fetched: 4 row(s)
+hive> describe formatted department_data;
+OK
+# col_name              data_type               comment
+
+dept_id                 int
+dept_name               string
+manager_id              int
+salary                  int
+
+# Detailed Table Information
+Database:               hive_class_b1
+Owner:                  root
+CreateTime:             Tue Feb 21 17:16:43 UTC 2023
+LastAccessTime:         UNKNOWN
+Retention:              0
+Location:               hdfs://namenode:8020/user/hive/warehouse/hive_class_b1.db/department_data
+Table Type:             MANAGED_TABLE
+Table Parameters:
+        COLUMN_STATS_ACCURATE   {\"BASIC_STATS\":\"true\"}
+        numFiles                0
+        numRows                 0
+        rawDataSize             0
+        totalSize               0
+        transient_lastDdlTime   1676999803
+
+# Storage Information
+SerDe Library:          org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
+InputFormat:            org.apache.hadoop.mapred.TextInputFormat
+OutputFormat:           org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
+Compressed:             No
+Num Buckets:            -1
+Bucket Columns:         []
+Sort Columns:           []
+Storage Desc Params:
+        field.delim             ,
+        serialization.format    ,
+Time taken: 0.204 seconds, Fetched: 34 row(s)
+
+
+--- copy data to container
+E:\iNeuron\Hive\Hive_ClassSteps_Practice>docker cp data/depart_data.csv bd3851c6bbe6:home
+
+-- start hive server
+E:\iNeuron\Hive\Hive_ClassSteps_Practice>docker compose exec hive-server bash
+
+-- create dataset in hadoop
+root@bd3851c6bbe6:/opt# hadoop fs -mkdir /user/dataset
+
+-- copy dataset from container to hadoop
+root@bd3851c6bbe6:/opt# hadoop fs -put -f /home/depart_data.csv /user/dataset
+
+-- check if files are copied
+root@bd3851c6bbe6:/opt# hadoop fs -ls /user/dataset
+Found 1 items
+-rw-r--r--   3 root supergroup        655 2023-02-21 17:22 /user/dataset/depart_data.csv
+
+-- start hive shell
+root@bd3851c6bbe6:/opt# hive
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/opt/hive/lib/log4j-slf4j-impl-2.6.2.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/opt/hadoop-2.7.4/share/hadoop/common/lib/slf4j-log4j12-1.7.10.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+
+-- load the data from hadoop to hive table
+hive> load data inpath '/user/dataset/depart_data.csv/' into table department_data;
+Loading data to table hive_class_b1.department_data
+OK
+Time taken: 2.256 seconds
+hive> set hive.cli.print.header = true;
+
+-- EXIT of Hive to load files from local -> Container -> hadoop -> hive
+
+-- load new data
+root@bd3851c6bbe6:/opt# hadoop fs -put -f /home/depart_data.csv /user/dataset
+
+-- check for files
+root@bd3851c6bbe6:/opt# hadoop fs -ls /user/dataset
+Found 1 items
+-rw-r--r--   3 root supergroup        655 2023-02-21 17:52 /user/dataset/depart_data.csv
+
+-- load new data
+root@bd3851c6bbe6:/opt# hadoop fs -put -f /home/array_data.csv /user/dataset
+
+-- check for files
+root@bd3851c6bbe6:/opt# hadoop fs -ls /user/dataset
+Found 2 items
+-rw-r--r--   3 root supergroup        215 2023-02-21 17:52 /user/dataset/array_data.csv
+-rw-r--r--   3 root supergroup        655 2023-02-21 17:52 /user/dataset/depart_data.csv
+
+-- load new data
+root@bd3851c6bbe6:/opt# hadoop fs -put -f /home/map_data.csv /user/dataset
+
+-- check for new files
+root@bd3851c6bbe6:/opt# hadoop fs -ls /user/dataset
+Found 3 items
+-rw-r--r--   3 root supergroup        215 2023-02-21 17:52 /user/dataset/array_data.csv
+-rw-r--r--   3 root supergroup        655 2023-02-21 17:52 /user/dataset/depart_data.csv
+-rw-r--r--   3 root supergroup        195 2023-02-21 17:54 /user/dataset/map_data.csv
+
+
+-- start hive
+root@bd3851c6bbe6:/opt# hive
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/opt/hive/lib/log4j-slf4j-impl-2.6.2.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/opt/hadoop-2.7.4/share/hadoop/common/lib/slf4j-log4j12-1.7.10.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+
+Logging initialized using configuration in file:/opt/hive/conf/hive-log4j2.properties Async: true
+Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. spark, tez) or using Hive 1.X releases.
+hive> show tables;
+OK
+department_data
+Time taken: 1.909 seconds, Fetched: 1 row(s)
+
+
+-- new table
+hive> create table employee
+    > (
+    > id int,
+    > name string,
+    > skills array<string>
+    > )
+    > row format delimited
+    > fields terminated by ','
+    > collection items terminated by ':';
+OK
+Time taken: 0.735 seconds
+
+
+-- load data to table
+hive> load data inpath '/user/dataset/array_data.csv' into table employee;
+Loading data to table default.employee
+OK
+Time taken: 1.973 seconds
+
+
+-- query1
+hive> select id, name, skills[0] as prime_skill from employee;
+OK
+101     Amit    HADOOP
+102     Sumit   HIVE
+103     Rohit   KAFKA
+Time taken: 3.237 seconds, Fetched: 3 row(s)
+
+-- query2
+hive> select
+    > id,
+    > name,
+    > size(skills) as size_of_each_array,
+    > array_contains(skills,"HADOOP") as knows_hadoop,
+    > sort_array(skills) as sorted_array
+    > from employee;
+OK
+101     Amit    4       true    ["BIG-DATA                                                                                                           ","HADOOP","HIVE","SPARK"]
+102     Sumit   5       true    ["HADOOP","HIVE","OZZIE","SPARK","STORM"]
+103     Rohit   3       false   ["CASSANDRA","HBASE","KAFKA"]
+Time taken: 0.243 seconds, Fetched: 3 row(s)
+
+-- create new table
+hive>
+    > create table employee_map_data
+    > (
+    > id int,
+    > name string,
+    > details map<string,string>
+    > )
+    > row format delimited
+    > fields terminated by ','
+    > collection items terminated by '|'
+    > map keys terminated by ':';
+    >
+    >
+    > ;
+hive> show tables;
+OK
+department_data
+employee
+employee_map_data
+Time taken: 0.041 seconds, Fetched: 3 row(s)
+
+
+-- load data to new table
+hive> load data inpath '/user/dataset/map_data.csv' into table employee_map_data;
+Loading data to table default.employee_map_data
+OK
+Time taken: 1.369 seconds
+
+-- query1
+hive> select
+    > id,
+    > name,
+    > details["gender"] as employee_gender
+    > from employee_map_data;
+OK
+101     Amit    M
+102     Sumit   M
+103     Mansi   F
+Time taken: 0.223 seconds, Fetched: 3 row(s)
+
+-- query2
+hive> select
+    > id,
+    > name,
+    > details,
+    > size(details) as size_of_each_map,
+    > map_keys(details) as distinct_map_keys,
+    > map_values(details) as distinct_map_values
+    > from employee_map_data;
+OK
+101     Amit    {"age":"21","gender":"M                                                                                                                      "} 2       ["age","gender"]        ["21","M                                                                                                                      "]
+102     Sumit   {"age":"24","gender":"M"}       2       ["age","gender"]        ["24","M"]
+103     Mansi   {"age":"23","gender":"F"}       2       ["age","gender"]        ["23","F"]
+Time taken: 0.248 seconds, Fetched: 3 row(s)
+hive>
